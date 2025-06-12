@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النزاعات والشكاوى - منصة الوساطة الآمنة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .back-btn, .new-dispute-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .new-dispute-btn {
+            background: rgba(255,255,255,0.9);
+            color: #f44336;
+        }
+        
+        .back-btn:hover, .new-dispute-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .new-dispute-btn:hover {
+            background: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .disputes-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .tab-btn.active {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+        
+        .disputes-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .dispute-card {
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        
+        .dispute-card:hover {
+            border-color: #f44336;
+            transform: translateY(-3px);
+        }
+        
+        .dispute-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .dispute-id {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dispute-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-open {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-investigating {
+            background: #cce7ff;
+            color: #004085;
+        }
+        
+        .status-resolved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-closed {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .dispute-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .dispute-description {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f44336;
+        }
+        
+        .description-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #f44336;
+        }
+        
+        .description-text {
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .dispute-timeline {
+            margin-bottom: 20px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-right: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 15px;
+            padding-right: 40px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            right: 8px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #f44336;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #f44336;
+        }
+        
+        .timeline-content {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-date {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-description {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .dispute-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #f44336;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .dispute-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .dispute-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .filter-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>النزاعات والشكاوى</h1>
+        <div class="header-actions">
+            <button class="new-dispute-btn" onclick="openNewDisputeModal()">+ فتح نزاع جديد</button>
+            <a href="dashboard.html" class="back-btn">← العودة للوحة التحكم</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- إحصائيات النزاعات -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">⚖️</div>
+                <div class="stat-number" id="totalDisputes">0</div>
+                <div class="stat-label">إجمالي النزاعات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔍</div>
+                <div class="stat-number" id="activeDisputes">0</div>
+                <div class="stat-label">قيد المراجعة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number" id="resolvedDisputes">0</div>
+                <div class="stat-label">تم حلها</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-number" id="avgResolutionTime">2.5</div>
+                <div class="stat-label">متوسط وقت الحل (أيام)</div>
+            </div>
+        </div>
+        
+        <!-- قسم النزاعات -->
+        <div class="disputes-section">
+            <div class="section-header">
+                <h2 class="section-title">نزاعاتي</h2>
+                <div class="filter-tabs">
+                    <button class="tab-btn active" onclick="filterDisputes('all')">الكل</button>
+                    <button class="tab-btn" onclick="filterDisputes('open')">مفتوحة</button>
+                    <button class="tab-btn" onclick="filterDisputes('investigating')">قيد المراجعة</button>
+                    <button class="tab-btn" onclick="filterDisputes('resolved')">محلولة</button>
+                </div>
+            </div>
+            
+            <div class="disputes-grid" id="disputesGrid">
+                <!-- سيتم إضافة النزاعات هنا بواسطة JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- نافذة فتح نزاع جديد -->
+    <div class="modal" id="newDisputeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">فتح نزاع جديد</h3>
+                <button class="close-btn" onclick="closeModal('newDisputeModal')">&times;</button>
+            </div>
+            
+            <form id="newDisputeForm">
+                <div class="form-group">
+                    <label class="form-label">رقم الطلب المتنازع عليه</label>
+                    <select class="form-select" id="disputeOrderId" required>
+                        <option value="">اختر الطلب</option>
+                        <option value="ORD-001">ORD-001 - هاتف ذكي متطور</option>
+                        <option value="ORD-002">ORD-002 - لابتوب للألعاب</option>
+                        <option value="ORD-003">ORD-003 - ساعة ذكية رياضية</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">نوع النزاع</label>
+                    <select class="form-select" id="disputeType" required>
+                        <option value="">اختر نوع النزاع</option>
+                        <option value="not_received">لم أستلم المنتج</option>
+                        <option value="wrong_item">منتج مختلف عن الطلب</option>
+                        <option value="damaged">منتج تالف أو معطوب</option>
+                        <option value="fake">منتج مقلد أو غير أصلي</option>
+                        <option value="seller_issue">مشكلة مع البائع</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">وصف المشكلة</label>
+                    <textarea class="form-textarea" id="disputeDescription" placeholder="يرجى وصف المشكلة بالتفصيل..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">الحل المطلوب</label>
+                    <select class="form-select" id="requestedSolution" required>
+                        <option value="">اختر الحل المطلوب</option>
+                        <option value="refund">استرداد كامل</option>
+                        <option value="partial_refund">استرداد جزئي</option>
+                        <option value="replacement">استبدال المنتج</option>
+                        <option value="repair">إصلاح المنتج</option>
+                        <option value="compensation">تعويض</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('newDisputeModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">فتح النزاع</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // بيانات النزاعات الوهمية
+        const disputes = [
+            {
+                id: 'DIS-001',
+                orderId: 'ORD-001',
+                productName: 'هاتف ذكي متطور',
+                type: 'not_received',
+                status: 'investigating',
+                description: 'لم أستلم المنتج رغم مرور أسبوع على التاريخ المحدد للتسليم',
+                requestedSolution: 'refund',
+                createdAt: '2025-06-10 14:30',
+                timeline: [
+                    { date: '2025-06-10 14:30', title: 'تم فتح النزاع', description: 'المشتري فتح نزاع بسبب عدم استلام المنتج' },
+                    { date: '2025-06-10 16:00', title: 'تم إشعار البائع', description: 'تم إرسال إشعار للبائع للرد على النزاع' },
+                    { date: '2025-06-11 09:30', title: 'رد البائع', description: 'البائع أكد الشحن وقدم رقم التتبع' },
+                    { date: '2025-06-12 10:00', title: 'قيد المراجعة', description: 'فريق الدعم يراجع الأدلة المقدمة' }
+                ]
+            },
+            {
+                id: 'DIS-002',
+                orderId: 'ORD-003',
+                productName: 'ساعة ذكية رياضية',
+                type: 'damaged',
+                status: 'resolved',
+                description: 'وصلت الساعة والشاشة مكسورة والعلبة تالفة',
+                requestedSolution: 'replacement',
+                createdAt: '2025-06-08 11:20',
+                resolvedAt: '2025-06-09 15:45',
+                timeline: [
+                    { date: '2025-06-08 11:20', title: 'تم فتح النزاع', description: 'المشتري أبلغ عن وصول منتج تالف' },
+                    { date: '2025-06-08 12:00', title: 'طلب أدلة', description: 'تم طلب صور للمنتج التالف' },
+                    { date: '2025-06-08 14:30', title: 'تم تقديم الأدلة', description: 'المشتري قدم صور واضحة للضرر' },
+                    { date: '2025-06-09 09:00', title: 'موافقة البائع', description: 'البائع وافق على الاستبدال' },
+                    { date: '2025-06-09 15:45', title: 'تم حل النزاع', description: 'تم الاتفاق على استبدال المنتج' }
+                ]
+            }
+        ];
+
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        // تحميل النزاعات
+        function loadDisputes(filter = 'all') {
+            const disputesGrid = document.getElementById('disputesGrid');
+            disputesGrid.innerHTML = '';
+
+            let filteredDisputes = disputes;
+
+            if (filter !== 'all') {
+                filteredDisputes = disputes.filter(dispute => dispute.status === filter);
+            }
+
+            if (filteredDisputes.length === 0) {
+                disputesGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>لا توجد نزاعات</h3>
+                        <p>لم يتم العثور على نزاعات في هذه الفئة</p>
+                        <button class="btn btn-primary" onclick="openNewDisputeModal()">فتح نزاع جديد</button>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredDisputes.forEach(dispute => {
+                const disputeCard = createDisputeCard(dispute);
+                disputesGrid.appendChild(disputeCard);
+            });
+
+            updateStats();
+        }
+
+        // إنشاء بطاقة النزاع
+        function createDisputeCard(dispute) {
+            const disputeCard = document.createElement('div');
+            disputeCard.className = 'dispute-card';
+
+            const statusClass = `status-${dispute.status}`;
+            const statusText = getStatusText(dispute.status);
+            const typeText = getTypeText(dispute.type);
+            const solutionText = getSolutionText(dispute.requestedSolution);
+
+            disputeCard.innerHTML = `
+                <div class="dispute-header">
+                    <div class="dispute-id">نزاع رقم: ${dispute.id}</div>
+                    <div class="dispute-status ${statusClass}">${statusText}</div>
+                </div>
+                
+                <div class="dispute-details">
+                    <div class="detail-group">
+                        <div class="detail-label">رقم الطلب</div>
+                        <div class="detail-value">${dispute.orderId}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">المنتج</div>
+                        <div class="detail-value">${dispute.productName}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">نوع النزاع</div>
+                        <div class="detail-value">${typeText}</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">الحل المطلوب</div>
+                        <div class="detail-value">${solutionText}</div>
+                    </div>
+                </div>
+                
+                <div class="dispute-description">
+                    <div class="description-title">وصف المشكلة:</div>
+                    <div class="description-text">${dispute.description}</div>
+                </div>
+                
+                <div class="dispute-timeline">
+                    <h4 style="margin-bottom: 15px; color: #333;">تاريخ النزاع:</h4>
+                    <div class="timeline">
+                        ${dispute.timeline.map(item => `
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-date">${item.date}</div>
+                                    <div class="timeline-title">${item.title}</div>
+                                    <div class="timeline-description">${item.description}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="dispute-actions">
+                    ${getDisputeActions(dispute)}
+                </div>
+            `;
+
+            return disputeCard;
+        }
+
+        // الحصول على نص الحالة
+        function getStatusText(status) {
+            const statusMap = {
+                'open': 'مفتوح',
+                'investigating': 'قيد المراجعة',
+                'resolved': 'تم الحل',
+                'closed': 'مغلق'
+            };
+            return statusMap[status] || status;
+        }
+
+        // الحصول على نص نوع النزاع
+        function getTypeText(type) {
+            const typeMap = {
+                'not_received': 'لم أستلم المنتج',
+                'wrong_item': 'منتج مختلف',
+                'damaged': 'منتج تالف',
+                'fake': 'منتج مقلد',
+                'seller_issue': 'مشكلة مع البائع',
+                'other': 'أخرى'
+            };
+            return typeMap[type] || type;
+        }
+
+        // الحصول على نص الحل المطلوب
+        function getSolutionText(solution) {
+            const solutionMap = {
+                'refund': 'استرداد كامل',
+                'partial_refund': 'استرداد جزئي',
+                'replacement': 'استبدال المنتج',
+                'repair': 'إصلاح المنتج',
+                'compensation': 'تعويض'
+            };
+            return solutionMap[solution] || solution;
+        }
+
+        // الحصول على أزرار الإجراءات
+        function getDisputeActions(dispute) {
+            let actions = '';
+
+            switch(dispute.status) {
+                case 'open':
+                    actions = `
+                        <button class="btn btn-warning" onclick="addEvidence('${dispute.id}')">إضافة أدلة</button>
+                        <button class="btn btn-secondary" onclick="cancelDispute('${dispute.id}')">إلغاء النزاع</button>
+                    `;
+                    break;
+                case 'investigating':
+                    actions = `
+                        <button class="btn btn-warning" onclick="addEvidence('${dispute.id}')">إضافة أدلة</button>
+                        <button class="btn btn-secondary" onclick="viewDetails('${dispute.id}')">عرض التفاصيل</button>
+                    `;
+                    break;
+                case 'resolved':
+                    actions = `
+                        <button class="btn btn-success" onclick="acceptResolution('${dispute.id}')">قبول الحل</button>
+                        <button class="btn btn-warning" onclick="appealDispute('${dispute.id}')">استئناف</button>
+                    `;
+                    break;
+                default:
+                    actions = `
+                        <button class="btn btn-secondary" onclick="viewDetails('${dispute.id}')">عرض التفاصيل</button>
+                    `;
+            }
+
+            return actions;
+        }
+
+        // تحديث الإحصائيات
+        function updateStats() {
+            const totalDisputes = disputes.length;
+            const activeDisputes = disputes.filter(d => ['open', 'investigating'].includes(d.status)).length;
+            const resolvedDisputes = disputes.filter(d => d.status === 'resolved').length;
+
+            document.getElementById('totalDisputes').textContent = totalDisputes;
+            document.getElementById('activeDisputes').textContent = activeDisputes;
+            document.getElementById('resolvedDisputes').textContent = resolvedDisputes;
+        }
+
+        // فلترة النزاعات
+        function filterDisputes(filter) {
+            // تحديث أزرار التبويبات
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // تحميل النزاعات المفلترة
+            loadDisputes(filter);
+        }
+
+        // فتح نافذة نزاع جديد
+        function openNewDisputeModal() {
+            document.getElementById('newDisputeModal').style.display = 'block';
+        }
+
+        // إغلاق النافذة
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // إضافة أدلة
+        function addEvidence(disputeId) {
+            alert(`إضافة أدلة للنزاع ${disputeId}\n(ميزة قيد التطوير - يمكن إضافة صور ومستندات)`);
+        }
+
+        // إلغاء النزاع
+        function cancelDispute(disputeId) {
+            if (confirm('هل أنت متأكد من إلغاء هذا النزاع؟')) {
+                const dispute = disputes.find(d => d.id === disputeId);
+                if (dispute) {
+                    dispute.status = 'closed';
+                    dispute.timeline.push({
+                        date: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                        title: 'تم إلغاء النزاع',
+                        description: 'المشتري ألغى النزاع'
+                    });
+                }
+                alert('تم إلغاء النزاع بنجاح');
+                loadDisputes();
+            }
+        }
+
+        // قبول الحل
+        function acceptResolution(disputeId) {
+            if (confirm('هل أنت راضٍ عن الحل المقترح؟')) {
+                const dispute = disputes.find(d => d.id === disputeId);
+                if (dispute) {
+                    dispute.status = 'closed';
+                    dispute.timeline.push({
+                        date: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                        title: 'تم قبول الحل',
+                        description: 'المشتري قبل الحل المقترح'
+                    });
+                }
+                alert('شكراً لك! تم إغلاق النزاع بنجاح');
+                loadDisputes();
+            }
+        }
+
+        // استئناف النزاع
+        function appealDispute(disputeId) {
+            const reason = prompt('يرجى توضيح سبب الاستئناف:');
+            if (reason && reason.trim()) {
+                alert('تم تقديم الاستئناف بنجاح\nسيتم مراجعته من قبل مشرف أعلى');
+            }
+        }
+
+        // عرض التفاصيل
+        function viewDetails(disputeId) {
+            const dispute = disputes.find(d => d.id === disputeId);
+            if (dispute) {
+                let details = `تفاصيل النزاع ${dispute.id}\n\n`;
+                details += `الطلب: ${dispute.orderId}\n`;
+                details += `المنتج: ${dispute.productName}\n`;
+                details += `النوع: ${getTypeText(dispute.type)}\n`;
+                details += `الحالة: ${getStatusText(dispute.status)}\n`;
+                details += `تاريخ الفتح: ${dispute.createdAt}\n`;
+                if (dispute.resolvedAt) {
+                    details += `تاريخ الحل: ${dispute.resolvedAt}\n`;
+                }
+                alert(details);
+            }
+        }
+
+        // معالجة نموذج النزاع الجديد
+        document.getElementById('newDisputeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                orderId: document.getElementById('disputeOrderId').value,
+                type: document.getElementById('disputeType').value,
+                description: document.getElementById('disputeDescription').value,
+                requestedSolution: document.getElementById('requestedSolution').value
+            };
+
+            // إنشاء نزاع جديد
+            const newDispute = {
+                id: `DIS-${String(disputes.length + 1).padStart(3, '0')}`,
+                orderId: formData.orderId,
+                productName: getProductNameFromOrderId(formData.orderId),
+                type: formData.type,
+                status: 'open',
+                description: formData.description,
+                requestedSolution: formData.requestedSolution,
+                createdAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                timeline: [
+                    {
+                        date: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                        title: 'تم فتح النزاع',
+                        description: `تم فتح نزاع جديد: ${getTypeText(formData.type)}`
+                    }
+                ]
+            };
+
+            disputes.unshift(newDispute);
+
+            alert('تم فتح النزاع بنجاح!\nسيتم مراجعته من قبل فريق الدعم خلال 24 ساعة.');
+            closeModal('newDisputeModal');
+            loadDisputes();
+
+            // إعادة تعيين النموذج
+            this.reset();
+        });
+
+        // الحصول على اسم المنتج من رقم الطلب
+        function getProductNameFromOrderId(orderId) {
+            const products = {
+                'ORD-001': 'هاتف ذكي متطور',
+                'ORD-002': 'لابتوب للألعاب',
+                'ORD-003': 'ساعة ذكية رياضية'
+            };
+            return products[orderId] || 'منتج غير معروف';
+        }
+
+        // إغلاق النافذة عند النقر خارجها
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+
+        // تحميل الصفحة
+        window.onload = function() {
+            // التحقق من تسجيل الدخول
+            if (!currentUser || !currentUser.isLoggedIn) {
+                alert('يجب تسجيل الدخول أولاً');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            loadDisputes();
+        };
+    </script>
+</body>
+</html>
+
