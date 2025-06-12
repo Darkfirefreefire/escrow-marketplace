@@ -1,0 +1,8 @@
+{
+  "buildCommand": "echo 'Static site'",
+  "outputDirectory": "frontend",
+  "framework": null,
+  "cleanUrls": true,
+  "trailingSlash": false
+}
+
