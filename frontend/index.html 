@@ -113,6 +113,23 @@
             opacity: 0.9;
         }
         
+        .cta {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .cta:hover {
+            background: #45a049;
+            transform: translateY(-3px);
+        }
+        
         .search-bar {
             max-width: 500px;
             margin: 30px auto;
@@ -337,8 +354,8 @@
                 <a href="#contact">اتصل بنا</a>
             </nav>
             <div class="auth-buttons">
-                <a href="login.html" class="btn btn-primary">تسجيل الدخول</a>
-                <a href="dashboard.html" class="btn btn-secondary">لوحة التحكم</a>
+                <button class="btn btn-primary" onclick="goToLogin()">تسجيل الدخول</button>
+                <button class="btn btn-secondary" onclick="goToDashboard()">لوحة التحكم</button>
             </div>
         </div>
     </header>
@@ -347,6 +364,7 @@
         <div class="hero-content">
             <h1>تسوق بثقة تامة</h1>
             <p>منصة الوساطة الآمنة تضمن حقوق المشتري والبائع معاً</p>
+            <button class="cta" onclick="goToLogin()">ابدأ التسوق أو بيع منتجاتك بثقة!</button>
             
             <div class="search-bar">
                 <input type="text" placeholder="ابحث عن المنتجات..." id="searchInput">
@@ -400,6 +418,24 @@
     </footer>
 
     <script>
+        // وظائف التنقل المُحدثة
+        function goToLogin() {
+            // جرب عدة طرق للتنقل
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.location.href = 'login.html';
+            } else {
+                window.location.href = '/login.html';
+            }
+        }
+        
+        function goToDashboard() {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = '/dashboard.html';
+            }
+        }
+
         // بيانات المنتجات الوهمية
         const products = [
             {
@@ -495,7 +531,6 @@
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
             
-            // إشعار بإضافة المنتج
             alert(`تم إضافة "${product.title}" إلى السلة`);
         }
 
@@ -525,8 +560,7 @@
             cartSummary += `الإجمالي الكلي: ${total} ر.س`;
             
             if (confirm(cartSummary + '\n\nهل تريد المتابعة للدفع؟')) {
-                // التوجه لصفحة الدفع
-                alert('سيتم توجيهك لصفحة الدفع (قيد التطوير)');
+                goToLogin();
             }
         }
 
